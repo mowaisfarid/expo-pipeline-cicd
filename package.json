@@ -1,5 +1,5 @@
 {
-  "name": "minimilis",
+  "name": "expo-cicd",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -7,6 +7,12 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "eas:android:dev": "eas build --profile development --platform android",
+    "eas:android:release": "eas build --profile production --platform android",
+    "eas:ios:dev": "eas build --profile development --platform ios",
+    "eas:ios:release": "eas build --profile production --platform ios",
+    "eas:install:android": "eas device:install --platform android",
+    "eas:install:ios": "eas device:install --platform ios ",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
