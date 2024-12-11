@@ -19,17 +19,12 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Clear Yarn cache
-        run: yarn cache clean
+      - name: Install Expo CLI and EAS CLI using npm
+        run: |
+          npm install -g expo-cli eas-cli
 
       - name: Install dependencies
-        run: yarn install
-
-      - name: Install Expo CLI
-        run: npm install -g expo-cli@5.6.0
-
-      - name: Install EAS CLI
-        run: npm install -g eas-cli@14.1.0
+        run: npm install
 
       - name: Publish to Expo
         run: NODE_ENV=dev expo publish --non-interactive --release-channel pr-${{ github.event.number }}
