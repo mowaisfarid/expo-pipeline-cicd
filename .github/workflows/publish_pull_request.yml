@@ -24,7 +24,7 @@ jobs:
           npm install -g expo-cli eas-cli
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Publish to Expo
         run: NODE_ENV=dev expo publish --non-interactive --release-channel pr-${{ github.event.number }}
