@@ -24,7 +24,13 @@ jobs:
           npm install -g expo-cli eas-cli
 
       - name: Install dependencies
-        run: yarn install
+        run: |
+          rm -rf node_modules
+          npm cache clean --force
+          npm install  # Run npm install to install dependencies
+
+      - name: Install React Native dependencies for Expo
+        run: expo install react-native # Ensure react-native is installed correctly
 
       - name: Publish to Expo
         run: NODE_ENV=dev expo publish --non-interactive --release-channel pr-${{ github.event.number }}
