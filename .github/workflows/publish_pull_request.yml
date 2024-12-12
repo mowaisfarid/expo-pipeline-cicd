@@ -22,7 +22,6 @@ jobs:
       - name: Install Expo CLI and Dependencies
         run: |
           npm install -g expo-cli eas-cli
-          npm install react-native@0.76.5
 
       - name: Install Project Dependencies
         run: |
@@ -30,11 +29,15 @@ jobs:
           npm cache clean --force
           npm install
 
-      - name: Install React Native Dependencies for Expo
-        run: expo install react-native
-
       - name: Debug Installed Packages
         run: npm list react-native
+
+      - name: Ensure React Native is Installed
+        run: |
+          if ! npm list react-native; then
+            echo "React Native is not installed. Installing now..."
+            npm install react-native@0.76.5
+          fi
 
       - name: Publish to Expo
         run: NODE_ENV=dev expo publish --non-interactive --release-channel pr-${{ github.event.number }}
