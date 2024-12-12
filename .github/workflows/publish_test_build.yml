@@ -13,7 +13,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.15.0'
+          node-version: '16.14.0' # Downgrade to a supported version for expo-cli
 
       - name: Setup Expo
         uses: expo/expo-github-action@v7
@@ -24,7 +24,13 @@ jobs:
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          rm -rf node_modules
+          npm cache clean --force
+          npm install
+
+      - name: Debug Installed Packages
+        run: npm list --depth=0
 
       - name: Publish to Expo
         run: NODE_ENV=dev expo publish --non-interactive --release-channel test
