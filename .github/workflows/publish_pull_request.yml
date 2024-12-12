@@ -17,25 +17,29 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.15.0' # Updated to use Node.js >=18.0.0
+          node-version: '20.15.0' # Use Node.js >=18.0.0
 
-      - name: Install Expo CLI and EAS CLI using npm
+      - name: Install Expo CLI and Dependencies
         run: |
           npm install -g expo-cli eas-cli
+          npm install react-native@0.76.5
 
-      - name: Install dependencies
+      - name: Install Project Dependencies
         run: |
           rm -rf node_modules
           npm cache clean --force
-          npm install  # Run npm install to install dependencies
+          npm install
 
-      - name: Install React Native dependencies for Expo
-        run: expo install react-native # Ensure react-native is installed correctly
+      - name: Install React Native Dependencies for Expo
+        run: expo install react-native
+
+      - name: Debug Installed Packages
+        run: npm list react-native
 
       - name: Publish to Expo
         run: NODE_ENV=dev expo publish --non-interactive --release-channel pr-${{ github.event.number }}
 
-      - name: Add Expo link to PR
+      - name: Add Expo Link to PR
         uses: actions/github-script@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +47,7 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
             const releaseChannel = `pr-${prNumber}`;
-            const expoUrl = `https://expo.dev/@osandboxtester/minimilis?release-channel=${releaseChannel}`;
+            const expoUrl = `https://expo.dev/@your-username/your-project?release-channel=${releaseChannel}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(expoUrl)}&size=200x200`;
 
             github.rest.issues.createComment({
