@@ -3,11 +3,9 @@ on:
   push:
     branches:
       - develop
-
 jobs:
   publish:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -15,27 +13,27 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18.x' # Compatible Node.js version
+          node-version: '20.15.0'
 
-      - name: Install Dependencies
-        run: |
-          # Clean up old dependencies
-          rm -rf node_modules package-lock.json
-          npm cache clean --force
+      - name: Setup Expo
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: 5.x
+          expo-cache: true
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-          # Install new Expo CLI and Metro config
-          npm install --save-dev expo
-          npm install metro-config @expo/metro-config
-          npm install
-
-      - name: Clear Expo Cache
-        run: npx expo r -c
-
-      - name: Debug Installed Packages
-        run: npm list --depth=0
-
-      - name: Check Expo CLI Version
-        run: npx expo --version
+      - name: Install dependencies
+        run: npm install
 
       - name: Publish to Expo
-        run: NODE_ENV=dev npx expo publish --non-interactive --release-channel test
+        run: NODE_ENV=dev expo publish --non-interactive --release-channel test
+
+      # - name: Add Expo link to PR
+      #   uses: actions/github-script@v6
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     script: |
+      #       const prNumber = context.payload.pull_request.number;
+      #       const releaseChannel = `test`;
