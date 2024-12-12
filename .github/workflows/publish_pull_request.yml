@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20.15.0' # Use Node.js >=18.0.0
+          node-version: '16.14.0' # Downgrade to a supported version
 
       - name: Install Expo CLI and Dependencies
         run: |
@@ -29,15 +29,18 @@ jobs:
           npm cache clean --force
           npm install
 
-      - name: Debug Installed Packages
-        run: npm list react-native
-
       - name: Ensure React Native is Installed
         run: |
           if ! npm list react-native; then
             echo "React Native is not installed. Installing now..."
             npm install react-native@0.76.5
           fi
+
+      - name: Debug Node.js Version
+        run: node --version
+
+      - name: Debug Installed Packages
+        run: npm list --depth=0
 
       - name: Publish to Expo
         run: NODE_ENV=dev expo publish --non-interactive --release-channel pr-${{ github.event.number }}
