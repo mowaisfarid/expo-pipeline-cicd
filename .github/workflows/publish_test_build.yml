@@ -29,7 +29,7 @@ jobs:
           npm install
 
       - name: Clear Expo Cache
-        run: npx expo start --clear
+        run: npx expo r -c
 
       - name: Debug Installed Packages
         run: npm list --depth=0
