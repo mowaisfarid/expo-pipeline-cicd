@@ -1,0 +1,38 @@
+name: Publish Production Build
+on:
+  push:
+    branches:
+      - main
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: 5.x
+          expo-cache: true
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: EAS Build
+        run: npx eas-cli build --platform all --profile production --non-interactive
+
+      - name: Publish to App Store
+        run: EXPO-APPLE-APP-SPECIFIC-PASS-XXX npx eas-cli submit --platform ios --latest --non-interactive
+
+      - name: Publish to Play Store
+        run: npx eas-cli submit --platform android --latest --non-interactive
+
+      # - name: Publish to Web
