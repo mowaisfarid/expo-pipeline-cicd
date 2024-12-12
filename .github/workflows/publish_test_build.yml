@@ -3,9 +3,11 @@ on:
   push:
     branches:
       - develop
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -15,24 +17,25 @@ jobs:
         with:
           node-version: '18.x' # Compatible Node.js version
 
-      - name: Install Expo CLI
-        run: npm install -g expo-cli@latest
-
-      - name: Clean and Install Dependencies
+      - name: Install Dependencies
         run: |
+          # Clean up old dependencies
           rm -rf node_modules package-lock.json
           npm cache clean --force
-          npm install
+
+          # Install new Expo CLI and Metro config
+          npm install --save-dev expo
           npm install metro-config @expo/metro-config
+          npm install
 
       - name: Clear Expo Cache
-        run: expo start --clear
+        run: npx expo start --clear
 
       - name: Debug Installed Packages
         run: npm list --depth=0
 
       - name: Check Expo CLI Version
-        run: expo --version
+        run: npx expo --version
 
       - name: Publish to Expo
-        run: NODE_ENV=dev expo publish --non-interactive --release-channel test
+        run: NODE_ENV=dev npx expo publish --non-interactive --release-channel test
