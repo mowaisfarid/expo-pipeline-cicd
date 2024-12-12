@@ -19,30 +19,18 @@ jobs:
         with:
           node-version: '16.x' # Downgrade to a supported version
 
-      - name: Install Expo CLI and Dependencies
-        run: |
-          npm install -g expo-cli eas-cli
+      - name: Setup Expo
+        uses: expo/expo-github-action@v7
+        with:
+          expo-version: 5.x
+          expo-cache: true
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Install Project Dependencies
-        run: |
-          rm -rf node_modules
-          npm cache clean --force
-          npm install
+      - name: Install Dependencies
+        run: yarn
 
-      - name: Ensure React Native is Installed
-        run: |
-          if ! npm list react-native; then
-            echo "React Native is not installed. Installing now..."
-            npm install react-native@0.76.5
-          fi
-
-      - name: Debug Node.js Version
-        run: node --version
-
-      - name: Debug Installed Packages
-        run: npm list --depth=0
-
-      - name: Publish to Expo
+      - name: Publish to Expo Go
         run: NODE_ENV=dev expo publish --non-interactive --release-channel pr-${{ github.event.number }}
 
       - name: Add Expo Link to PR
@@ -53,7 +41,7 @@ jobs:
           script: |
             const prNumber = context.payload.pull_request.number;
             const releaseChannel = `pr-${prNumber}`;
-            const expoUrl = `https://expo.dev/@your-username/your-project?release-channel=${releaseChannel}`;
+            const expoUrl = `https://expo.dev/@osandboxtester/minimilis?release-channel=${releaseChannel}`;
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(expoUrl)}&size=200x200`;
 
             github.rest.issues.createComment({
